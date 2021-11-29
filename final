@@ -1,0 +1,79 @@
+cell = "_", "_", "_", "_", "_", "_", "_", "_", "_"
+
+row = [[cells for cells in cell[i:i + 3]] for i in range(0, 9, 3)]
+
+print("---------")
+print("|" + " " + row[0][0] + " " + row[0][1] + " " + row[0][2] + " " + "|")
+print("|" + " " + row[1][0] + " " + row[1][1] + " " + row[1][2] + " " + "|")
+print("|" + " " + row[2][0] + " " + row[2][1] + " " + row[2][2] + " " + "|")
+print("---------")
+
+n = 1
+state = ""
+
+while True:
+    while True:
+        coord = input().split()
+         
+        if coord[0].isalpha() or coord[1].isalpha():
+            print("You should enter numbers!")
+            continue
+        elif int(coord[0]) > 3 or int(coord[1]) > 3:
+            print("Coordinates should be from 1 to 3!")
+            continue
+        
+        i = (int(coord[0])) - 1
+        j = (int(coord[1])) - 1
+        
+        if (row[i][j] != "_"):
+            print("This cell is occupied! Choose another one!")
+            continue
+        
+        elif (row[i][j] == "_"):
+            if n % 2 == 0:
+                row[i][j] = row[i][j].replace("_", "O")
+                n = n + 1
+            else:
+                row[i][j] = row[i][j].replace("_", "X")
+                n = n + 1
+            break
+    
+    print("---------")
+    print("|" + " " + row[0][0] + " " + row[0][1] + " " + row[0][2] + " " + "|")
+    print("|" + " " + row[1][0] + " " + row[1][1] + " " + row[1][2] + " " + "|")
+    print("|" + " " + row[2][0] + " " + row[2][1] + " " + row[2][2] + " " + "|")
+    print("---------")
+
+# Analysing game state
+
+    col = [[cells[i] for cells in row] for i in range(3)]
+    diag_main = [[row[i][i] for i in range(3)]]
+    diag_sec = [[row[i][2 - i] for i in range(3)]]
+
+    matrix = row + col + diag_main + diag_sec
+
+    num_x = sum(x.count("X") for x in row)
+    num_o = sum(x.count("O") for x in row)
+    num_ = sum(x.count("_") for x in row)
+    dif = abs(num_x - num_o)
+    
+    x_win = ["X", "X", "X"]
+    o_win = ["O", "O", "O"]
+    
+    if (x_win in matrix and o_win in matrix) or (dif >= 2):
+        state = "Impossible"
+        continue
+    elif x_win in matrix:
+        state = "X wins"
+        break
+    elif o_win in matrix:
+        state = "O wins"
+        break
+    elif (num_ != 0) and (state != "X wins" and state != "O wins"):
+        state = "Game not finished"
+        continue
+    elif (num_ == 0) and (state != "X wins" and state != "O wins"):
+        state = "Draw"
+        break
+        
+print(state)
